@@ -1,20 +1,17 @@
-# Fundamental of kubernetes course
-# Linux x64
-FROM alpine
+FROM node:10-alpine
 
-LABEL maintainer="soewin.pku@gmail.com"
+RUN mkdir -p /home/node/app/node_modules && chown -R node:node /home/node/app
 
-# Install Node and NPM
-RUN apk add --update nodejs npm curl
+WORKDIR /home/node/app
 
-# Copy app to /src
-COPY . /src
+COPY package*.json ./
 
-WORKDIR /src
+USER node
 
-# Install dependencies
-RUN  npm install
+RUN npm install
+
+COPY --chown=node:node . .
 
 EXPOSE 8080
 
-ENTRYPOINT ["node", "./app.js"]
+CMD [ "node", "app.js" ]
